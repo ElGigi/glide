@@ -94,6 +94,30 @@ class Server
     }
 
     /**
+     * Trim path separator from prefix to prevent multiple combined separator.
+     */
+    private function trimPrefixPathSeparator(string $prefix): string
+    {
+        if (str_ends_with($prefix, '://')) {
+            return rtrim($prefix, '/').'/';
+        }
+
+        return trim($prefix, '/');
+    }
+
+    /**
+     * Remove filesystem identifier if present.
+     */
+    private function removeFilesystemIdentifier(string $path): string
+    {
+        if (false === ($identifierPos = strpos($path, '://'))) {
+            return $path;
+        }
+
+        return substr($path, $identifierPos + 3);
+    }
+
+    /**
      * Set source file system.
      *
      * @param FilesystemOperator $source Source file system.
@@ -120,7 +144,7 @@ class Server
      */
     public function setSourcePathPrefix(string $sourcePathPrefix): void
     {
-        $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
+        $this->sourcePathPrefix = $this->trimPrefixPathSeparator($sourcePathPrefix);
     }
 
     /**
@@ -228,7 +252,7 @@ class Server
      */
     public function setCachePathPrefix(string $cachePathPrefix): void
     {
-        $this->cachePathPrefix = trim($cachePathPrefix, '/');
+        $this->cachePathPrefix = $this->trimPrefixPathSeparator($cachePathPrefix);
     }
 
     /**
@@ -357,12 +381,16 @@ class Server
 
         $cachedPath = hash('xxh3', $sourcePath.'?'.http_build_query($params));
 
+        if (false !== ($identifierPos = strpos($sourcePath, '://'))) {
+            $sourcePath = substr($sourcePath, $identifierPos + 3);
+        }
+
         if ($this->groupCacheInFolders) {
             $cachedPath = $sourcePath.'/'.$cachedPath;
         }
 
         if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
+            $cachedPath = $this->cachePathPrefix.'/'.$this->removeFilesystemIdentifier($cachedPath);
         }
 
         if ($this->cacheWithFileExtensions) {

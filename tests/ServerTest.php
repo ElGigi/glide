@@ -59,6 +59,12 @@ class ServerTest extends TestCase
         $this->assertEquals('img', $this->server->getSourcePathPrefix());
     }
 
+    public function testSetSourcePathPrefixWithMonthIdentifier(): void
+    {
+        $this->server->setSourcePathPrefix('img://');
+        $this->assertEquals('img:/', $this->server->getSourcePathPrefix());
+    }
+
     public function testGetSourcePathPrefix(): void
     {
         $this->assertEquals('', $this->server->getSourcePathPrefix());
@@ -83,6 +89,22 @@ class ServerTest extends TestCase
     {
         $this->server->setSourcePathPrefix('img/');
         $this->assertEquals('img/image.jpg', $this->server->getSourcePath('image.jpg'));
+
+        $this->server->setSourcePathPrefix('img://');
+        $this->assertEquals('img://image.jpg', $this->server->getSourcePath('image.jpg'));
+        $this->assertEquals('img://path/image.jpg', $this->server->getSourcePath('/path/image.jpg'));
+    }
+
+    public function testGetSourcePathWithBaseUrlAndPrefix()
+    {
+        $this->server->setBaseUrl('base/');
+
+        $this->server->setSourcePathPrefix('img/');
+        $this->assertEquals('img/image.jpg', $this->server->getSourcePath('/base/image.jpg'));
+
+        $this->server->setSourcePathPrefix('img://');
+        $this->assertEquals('img://image.jpg', $this->server->getSourcePath('base/image.jpg'));
+        $this->assertEquals('img://path/image.jpg', $this->server->getSourcePath('/base/path/image.jpg'));
     }
 
     public function testGetSourcePathWithMissingPath(): void
@@ -133,6 +155,12 @@ class ServerTest extends TestCase
     {
         $this->server->setCachePathPrefix('img/');
         $this->assertEquals('img', $this->server->getCachePathPrefix());
+    }
+
+    public function testSetCachePathPrefixWithMonthIdentifier(): void
+    {
+        $this->server->setCachePathPrefix('img://');
+        $this->assertEquals('img:/', $this->server->getCachePathPrefix());
     }
 
     public function testGetCachePathPrefix(): void
@@ -314,6 +342,17 @@ class ServerTest extends TestCase
         ]]);
 
         $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
+    }
+
+    public function testGetCachePathWithMount(): void
+    {
+        $this->assertEquals('image.jpg/7116fbe362f62057', $this->server->getCachePath('file://image.jpg', []));
+    }
+
+    public function testGetCachePathWithMountAndCachePrefix(): void
+    {
+        $this->server->setCachePathPrefix('cache://');
+        $this->assertEquals('cache://image.jpg/7116fbe362f62057', $this->server->getCachePath('file://image.jpg', []));
     }
 
     public function testCacheFileExists(): void
