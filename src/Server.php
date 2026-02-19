@@ -95,10 +95,6 @@ class Server
 
     /**
      * Trim path separator from prefix to prevent multiple combined separator.
-     *
-     * @param string $prefix
-     *
-     * @return string
      */
     private function trimPrefixPathSeparator(string $prefix): string
     {
@@ -111,10 +107,6 @@ class Server
 
     /**
      * Remove filesystem identifier if present.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     private function removeFilesystemIdentifier(string $path): string
     {
@@ -260,7 +252,7 @@ class Server
      */
     public function setCachePathPrefix(string $cachePathPrefix): void
     {
-        $this->cachePathPrefix = $this->trimPrefixPathSeparator($cachePathPrefix ?? '');
+        $this->cachePathPrefix = $this->trimPrefixPathSeparator($cachePathPrefix);
     }
 
     /**
