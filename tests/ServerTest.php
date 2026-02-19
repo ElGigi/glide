@@ -352,13 +352,13 @@ class ServerTest extends TestCase
 
     public function testGetCachePathWithMount(): void
     {
-        $this->assertEquals('image.jpg/76226a1044d9a55855dbb51f98eacc67', $this->server->getCachePath('file://image.jpg', []));
+        $this->assertEquals('image.jpg/7116fbe362f62057', $this->server->getCachePath('file://image.jpg', []));
     }
 
     public function testGetCachePathWithMountAndCachePrefix(): void
     {
         $this->server->setCachePathPrefix('cache://');
-        $this->assertEquals('cache://image.jpg/76226a1044d9a55855dbb51f98eacc67', $this->server->getCachePath('file://image.jpg', []));
+        $this->assertEquals('cache://image.jpg/7116fbe362f62057', $this->server->getCachePath('file://image.jpg', []));
     }
 
     public function testCacheFileExists(): void
