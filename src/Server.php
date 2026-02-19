@@ -110,11 +110,11 @@ class Server
      */
     private function removeFilesystemIdentifier(string $path): string
     {
-        if (!str_contains($path, '://')) {
+        if (false === ($identifierPos = strpos($path, '://'))) {
             return $path;
         }
 
-        return explode('://', $path, 2)[1] ?? '';
+        return substr($path, $identifierPos + 3);
     }
 
     /**
@@ -381,8 +381,8 @@ class Server
 
         $cachedPath = hash('xxh3', $sourcePath.'?'.http_build_query($params));
 
-        if (false !== strpos($sourcePath, '://')) {
-            $sourcePath = explode('://', $sourcePath, 2)[1] ?? '';
+        if (false !== ($identifierPos = strpos($sourcePath, '://'))) {
+            $sourcePath = substr($sourcePath, $identifierPos + 3);
         }
 
         if ($this->groupCacheInFolders) {
