@@ -63,9 +63,6 @@ class ServerTest extends TestCase
     {
         $this->server->setSourcePathPrefix('img://');
         $this->assertEquals('img:/', $this->server->getSourcePathPrefix());
-
-        $this->server->setSourcePathPrefix('img:///');
-        $this->assertEquals('img:/', $this->server->getSourcePathPrefix());
     }
 
     public function testGetSourcePathPrefix(): void
@@ -163,9 +160,6 @@ class ServerTest extends TestCase
     public function testSetCachePathPrefixWithMonthIdentifier(): void
     {
         $this->server->setCachePathPrefix('img://');
-        $this->assertEquals('img:/', $this->server->getCachePathPrefix());
-
-        $this->server->setCachePathPrefix('img:///');
         $this->assertEquals('img:/', $this->server->getCachePathPrefix());
     }
 

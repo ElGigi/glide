@@ -102,10 +102,8 @@ class Server
      */
     private function trimPrefixPathSeparator(string $prefix): string
     {
-        if ('//' == substr($prefix, -2)) {
-            if (':' == substr(rtrim($prefix, '/'), -1)) {
-                return rtrim($prefix, '/').'/';
-            }
+        if (str_ends_with($prefix, '://')) {
+            return rtrim($prefix, '/').'/';
         }
 
         return trim($prefix, '/');
@@ -120,7 +118,7 @@ class Server
      */
     private function removeFilesystemIdentifier(string $path): string
     {
-        if (false === strpos($path, '://')) {
+        if (!str_contains($path, '://')) {
             return $path;
         }
 
@@ -154,7 +152,7 @@ class Server
      */
     public function setSourcePathPrefix(string $sourcePathPrefix): void
     {
-        $this->sourcePathPrefix = $this->trimPrefixPathSeparator($sourcePathPrefix ?? '');
+        $this->sourcePathPrefix = $this->trimPrefixPathSeparator($sourcePathPrefix);
     }
 
     /**
